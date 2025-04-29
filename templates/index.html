@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Sign Language Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-hands"></i> Indian Sign Language Recognition
+            <span id="status-indicator" class="status-indicator status-inactive"></span>
+        </h1>
+        <div class="top-row">
+            <!-- Box 1: Video Feed -->
+            <div class="box video-box">
+                <h2><i class="fas fa-video"></i> Live Feed</h2>
+                <div class="video-container">
+                    <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+                    <div class="video-stats" id="video-stats">
+                        Detection: Inactive | Hands: 0 | Confidence: 0%
+                    </div>
+                </div>
+                <div class="input-mode-selector">
+                    <h3><i class="fas fa-camera"></i> Input Source</h3>
+                    <div class="mode-buttons">
+                        <button id="webcam-mode-btn" class="secondary active">
+                            <i class="fas fa-video"></i> Webcam
+                        </button>
+                        <button id="video-upload-mode-btn" class="secondary">
+                            <i class="fas fa-file-video"></i> Video
+                        </button>
+                        <button id="image-upload-mode-btn" class="secondary">
+                            <i class="fas fa-file-image"></i> Image
+                        </button>
+                    </div>
+                    <div id="file-upload-container" style="display: none;">
+                        <input type="file" id="file-input" accept="video/*,image/*" style="display: none;">
+                        <button id="browse-files-btn" class="secondary">
+                            <i class="fas fa-folder-open"></i> Browse Files
+                        </button>
+                        <span id="selected-file-name">No file selected</span>
+                    </div>
+                </div>
+                <div class="video-controls">
+                    <button id="start-btn" class="success">
+                        <i class="fas fa-play"></i> Start
+                    </button>
+                    <button id="stop-btn" class="danger" disabled>
+                        <i class="fas fa-stop"></i> Stop
+                    </button>
+                    <button id="clear-btn" class="secondary">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Box 2: Recognized Text -->
+            <div class="box text-box">
+                <h2><i class="fas fa-text-width"></i> Recognized Text</h2>
+                <textarea id="gesture-text" readonly></textarea>
+                <div class="action-buttons">
+                    <button id="download-text-btn" class="secondary">
+                        <i class="fas fa-download"></i> Download Text
+                    </button>
+                    <button id="download-audio-btn" class="secondary">
+                        <i class="fas fa-volume-down"></i> Download Audio
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Box 3: Translation -->
+            <div class="box translation-box">
+                <h2><i class="fas fa-language"></i> Translation</h2>
+                <div class="translation-controls">
+                    <select id="language-select">
+                        <option value="ta" selected>Tamil</option>
+                        <option value="te">Telugu</option>
+                        <option value="kn">Kannada</option>
+                        <option value="ml">Malayalam</option>
+                        <option value="bn">Bengali</option>
+                        <option value="mr">Marathi</option>
+                        <option value="gu">Gujarati</option>
+                        <option value="pa">Punjabi</option>
+                        <option value="hi">Hindi</option>
+                    </select>
+                    <button id="translate-btn" class="primary">
+                        <i class="fas fa-exchange-alt"></i> Translate
+                    </button>
+                </div>
+                <textarea id="translated-text" readonly></textarea>
+                <div class="action-buttons">
+                    <button id="download-translated-text-btn" class="secondary">
+                        <i class="fas fa-download"></i> Download Text
+                    </button>
+                    <button id="download-translated-audio-btn" class="secondary">
+                        <i class="fas fa-volume-down"></i> Download Audio
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-row">
+            <!-- Box 4: Recognition History -->
+            <div class="box history-box">
+                <h2><i class="fas fa-history"></i> Recognition History</h2>
+                <ul id="history-list"></ul>
+            </div>
+            
+            <!-- Box 5: Quick Training -->
+            <div class="box training-box">
+                <h2><i class="fas fa-graduation-cap"></i> Quick Training</h2>
+                <div class="training-controls">
+                    <select id="gesture-label">
+                        <option value="">Select Gesture Label</option>
+                        <option value="Hello">Hello</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                        <option value="Thank You">Thank You</option>
+                        <option value="Please">Please</option>
+                        <option value="Goodbye">Goodbye</option>
+                        <option value="Help">Help</option>
+                        <option value="Food">Food</option>
+                        <option value="Water">Water</option>
+                        <option value="Sorry">Sorry</option>
+                        <option value="I Love You">I Love You</option>
+                        <option value="Friend">Friend</option>
+                        <option value="Home">Home</option>
+                        <option value="School">School</option>
+                        <option value="Work">Work</option>
+                    </select>
+                    <div class="training-buttons">
+                        <button id="start-training-btn" class="secondary">
+                            <i class="fas fa-video"></i> Webcam Training
+                        </button>
+                        <button id="upload-training-btn" class="secondary">
+                            <i class="fas fa-upload"></i> Upload Data
+                        </button>
+                        <button id="train-model-btn" class="secondary">
+                            <i class="fas fa-brain"></i> Train Model
+                        </button>
+                    </div>
+                </div>
+                <div class="training-progress" id="training-progress" style="display: none;">
+                    <progress value="0" max="100"></progress>
+                    <span id="progress-text">0%</span>
+                </div>
+                <div class="full-train-link">
+                    <a href="/train" style="text-decoration: none;">
+                        <button class="primary" style="width: 100%;">
+                            <i class="fas fa-graduation-cap"></i> Train a Model
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

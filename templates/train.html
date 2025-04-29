@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Training - Indian Sign Language Recognition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <i class="fas fa-graduation-cap"></i> Model Training
+            <a href="/" class="back-button">
+                <button class="secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Recognition
+                </button>
+            </a>
+        </h1>
+        
+        <div class="top-row">
+            <!-- Box 1: Webcam Training -->
+            <div class="box webcam-training-box">
+                <h2><i class="fas fa-video"></i> Webcam Training</h2>
+                <div class="training-controls">
+                    <input type="text" id="webcam-label" placeholder="Enter gesture label" class="training-input">
+                    <div class="webcam-controls">
+                        <button id="start-webcam-training" class="success">
+                            <i class="fas fa-play"></i> Start Training
+                        </button>
+                        <button id="stop-webcam-training" class="danger" style="display: none;">
+                            <i class="fas fa-stop"></i> Stop Training
+                        </button>
+                    </div>
+                    <div id="countdown" style="display: none; margin-top: 10px;">
+                        <p>Starting training in <span id="countdown-number">3</span> seconds. Show your gesture clearly!</p>
+                    </div>
+                </div>
+                <div class="video-container">
+                    <img src="{{ url_for('video_feed') }}" alt="Training Video Feed">
+                </div>
+                <div class="training-stats">
+                    <span id="webcam-training-status">Status: Ready</span>
+                </div>
+            </div>
+            
+            <!-- Box 2: Upload Training -->
+            <div class="box upload-training-box">
+                <h2><i class="fas fa-upload"></i> Upload Training</h2>
+                <div class="training-controls">
+                    <input type="text" id="upload-label" placeholder="Enter gesture label" class="training-input">
+                    <div class="upload-controls">
+                        <input type="file" id="training-file" multiple accept="image/*,video/*" style="display: none;">
+                        <button id="browse-training-files" class="secondary">
+                            <i class="fas fa-folder-open"></i> Select Files
+                        </button>
+                        <span id="selected-training-files">No files selected</span>
+                    </div>
+                    <button id="upload-training" class="success">
+                        <i class="fas fa-upload"></i> Upload Files
+                    </button>
+                </div>
+                <div class="upload-instructions">
+                    <p><i class="fas fa-info-circle"></i> You can upload multiple images or videos at once</p>
+                </div>
+            </div>
+            
+            <!-- Box 3: Model Training -->
+            <div class="box model-training-box">
+                <h2><i class="fas fa-brain"></i> Model Training</h2>
+                <div class="training-info">
+                    <p id="model-training-info">Train a new model with your collected data (Minimum 5 labels needed)</p>
+                    <p id="label-count">Current labels: <span id="labels-count">0</span></p>
+                </div>
+                <button id="train-model" class="secondary">
+                    <i class="fas fa-cogs"></i> Train Model
+                </button>
+                <div class="training-progress">
+                    <progress id="training-progress" value="0" max="100"></progress>
+                    <span id="progress-text">0%</span>
+                </div>
+                <div class="training-results" id="training-results">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-row">
+            <!-- Box 4: Existing Labels -->
+            <div class="box labels-box">
+                <h2><i class="fas fa-tags"></i> Existing Labels</h2>
+                <div class="labels-container">
+                    <ul id="labels-list"></ul>
+                </div>
+                <div class="labels-actions">
+                    <button id="refresh-labels" class="secondary">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Box 5: Training History -->
+            <div class="box training-history-box">
+                <h2><i class="fas fa-history"></i> Training History</h2>
+                <div class="history-container">
+                    <ul id="training-history-list">
+                        <li>No training history yet</li>
+                    </ul>
+                </div>
+                <div class="history-actions">
+                    <button id="clear-history" class="secondary">
+                        <i class="fas fa-trash"></i> Clear History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='train.js') }}"></script>
+</body>
+</html>
